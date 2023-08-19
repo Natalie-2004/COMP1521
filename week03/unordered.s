@@ -23,6 +23,9 @@ scan_loop__body:
  mul $t1, $t0, 4   #   calculate &numbers[i] == numbers + 4 * i
  li $t2, numbers   #
  add $t2, $t2, $t1   #
+
+ # sw -> Stores a word from a register into a specfic position of the array in memory
+ # ie. reading integers into the array
  sw $v0, ($t2)   #   scanf("%d", &numbers[i]);
 
  move $t3, $v0   #   final_number = numbers[i]
@@ -40,6 +43,8 @@ print_loop__body:
  mul $t1, $t0, 4   #   calculate &numbers[i] == numbers + 4 * i
  li $t2, numbers   #
  add $t2, $t2, $t1   #
+ # lw -> when you want to load a value from a specific position of the array in memory into a register.
+ # ie comparing elements of the array
  lw $a0, ($t2)  #
  bge $a0, $t3, print_loop__continue #   if (numbers[i] >= final_number) {
 
