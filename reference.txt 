@@ -1,8 +1,14 @@
 Common usage of syscall:
 syscall 0: return 0 -> use with jr $ra
 syscall 1: print int
+        -> li   $v0, 1
+        -> move $a0, (register)
+        -> syscall
 syscall 4: print string
 syscall 5: scan int
+        -> li   $v0, 5
+        -> syscall
+        -> move (other register), $v0
 syscall 11: scan char
 
 Usage of array:
@@ -24,6 +30,10 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
     li      $t2, numbers        # start address array numbers[ARRAY_LEN]
     add     $t2, $t1, $t2       # &numbers[i]
     sw      $v0, ($t2)          # scanf("%d", &numbers[i]);
+
+    OR
+
+    sw	    $t5, ($t2)			# numbers[i] = y;
 
 ### [i - 1] in int array: -> &numbers[i] - 4
     addi    (new register), (i register), (-4)
