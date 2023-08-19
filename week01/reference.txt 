@@ -1,0 +1,26 @@
+Common usage of syscall:
+syscall 0: return 0 -> use with jr $ra
+syscall 1: print int
+syscall 4: print string
+syscall 5: scan int
+syscall 11: scan char
+
+Usage of array:
+- declare array: ARRAY_LEN = 10(at the .text)
+- assign value (at the .data): 
+numbers:
+    .word   0:ARRAY_LEN         # int numbers[ARRAY_LEN] = {0};
+
+lw:Loads a word from memory into a register. i.e comparing elements of the array.
+
+    mul     $t1, $t0, 4         # element address = i * 4
+    li      $t2, numbers        # start address array numbers[ARRAY_LEN]
+    add     $t2, $t1, $t2       # &numbers[i]
+    lw      $t4, ($t2)          # int x = numbers[i];
+
+sw: Stores a word from a register into the array of memory.i.e reading integers from array
+
+    mul     $t1, $t0, 4         # element address = i * 4
+    li      $t2, numbers        # start address array numbers[ARRAY_LEN]
+    add     $t2, $t1, $t2       # &numbers[i]
+    sw      $v0, ($t2)          # scanf("%d", &numbers[i]);

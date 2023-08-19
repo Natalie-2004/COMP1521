@@ -1,4 +1,0 @@
-syscall 1: print int
-syscall 4: print string
-syscall 5: scan int
-syscall 11: scan char
