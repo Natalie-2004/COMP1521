@@ -24,3 +24,6 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
     li      $t2, numbers        # start address array numbers[ARRAY_LEN]
     add     $t2, $t1, $t2       # &numbers[i]
     sw      $v0, ($t2)          # scanf("%d", &numbers[i]);
+
+### [i - 1] in int array: -> &numbers[i] - 4
+    addi    (new register), (i register), (-4)
