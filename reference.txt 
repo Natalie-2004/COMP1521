@@ -54,3 +54,29 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
     add     $t2, $t2, $t1       # offset + y(col)
     mul     $t2, $t2, 4         # (offset + y) * sizeof(int)
     lw      $a0, array($t2)     # &array[x][y] = array + (x * N_COLS + y) * sizeof(int)
+
+Useage of Function:
+    prologue:
+        begin
+        push    $ra
+        push    $other s register
+
+    epilogue:
+        pop     $other s register
+        pop     $ra
+        end
+        jr      $ra (if main, before it plus li $v0 0 )
+
+### Use jal to call a function: 
+- the return of a function stores at $v0, use move to copy this value to other register. 
+- the argument of a function i.e rand(sum) is represented by $a0, $a1... before jal function, you need to assign the 'a' register
+
+    li      $a0, 100        # $a0 = 100
+    jal     rand            # rand(100);
+    move    $s0, $v0        # int value = rand(100)
+
+    OR
+
+    move    $a0, $s0        # move value to a register
+    jal     sub_rand        # sub_rand(value)
+    move    $s0, $v0        # value = sub_rand(value)
