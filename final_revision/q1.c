@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-// 255 -> 8 jin zhi
+// 255 -> 8 进制
 #define MASK_8_BIT 0xff 
 
 // given a uint32_t value, return 1 iff the least significant byte is euqla to the 2nd least significant byte
