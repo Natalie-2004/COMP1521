@@ -10,6 +10,9 @@ syscall 5: scan int
         -> syscall
         -> move (other register), $v0
 syscall 11: scan char
+        -> li   $v0, 11
+        -> li   $v0, '*'
+        -> syscall
 
 Usage of array:
 - declare array: ARRAY_LEN = 10(at the .text)
