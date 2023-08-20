@@ -20,7 +20,7 @@ Usage of array:
 numbers:
     .word   0:ARRAY_LEN         # int numbers[ARRAY_LEN] = {0};
 
-lw:Loads a word from memory into a register. i.e comparing elements of the array.
+lw:Loads a word from memory(address) into a register. i.e comparing elements of the array.
 
     mul     $t1, $t0, 4         # element address = i * 4
     li      $t2, numbers        # start address array numbers[ARRAY_LEN]
@@ -40,3 +40,14 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
 
 ### [i - 1] in int array: -> &numbers[i] - 4
     addi    (new register), (i register), (-4)
+
+### 2d array:
+- calculate a row of array: number of element * size
+- then add with the address of column
+- make its sum mul with the sizeof(int, char, double...)
+- use lw to assign the value from address into register
+
+    mul     $t2, $t0, N_COLS    # offset = x(row) * 24
+    add     $t2, $t2, $t1       # offset + y(col)
+    mul     $t2, $t2, 4         # (offset + y) * sizeof(int)
+    lw      $a0, array($t2)     # &array[x][y] = array + (x * N_COLS + y) * sizeof(int)
