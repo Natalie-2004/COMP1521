@@ -27,6 +27,9 @@ lw:Loads a word from memory(address) into a register. i.e comparing elements of 
     add     $t2, $t1, $t2       # &numbers[i]
     lw      $t4, ($t2)          # int x = numbers[i];
 
+    OR      
+    lb      $t2, prime($t0)     # to get prime[i($t0)] only if the prime array is sizeof(char), so no need to use formula to * 4. 
+
 sw: Stores a word from a register into the array of memory.i.e reading integers from array
 
     mul     $t1, $t0, 4         # element address = i * 4
