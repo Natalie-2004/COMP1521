@@ -1,4 +1,5 @@
 # A simple program to manage student marks.
+# YOUR-NAME-HERE, INSERT-DATE-HERE
 
 #![tabsize(8)]
 
@@ -54,11 +55,7 @@ print_report__unknown_mark:
 # - [ ] find_student_by_id
 # - [ ] update_student_mark
 # - [ ] print_report
-# Some of the above functions are partially implemented for you. You may choose 
-# to complete the provided implementation, or you may choose to implement them
-# yourself from scratch.
-#
-# The following function is provided for you. You should NOT modify it.
+# The following function is provided for you:
 # - [X] main
 ################################################################################
 
@@ -72,64 +69,39 @@ find_student_by_id:
 	#	- $v0: struct student *
 	#
 	# Stack:	[]
-	# Uses:		[..., $t0, $v0]
-	# Clobbers:	[..., $t0, $v0]
+	# Uses:		[]
+	# Clobbers:	[]
 	#
 	# Locals:
-	#	- $t0: int i
-	#	- ...
 	#
 	# Structure:
 	#	-> [prologue]
 	#	-> [body]
-	#	  -> loop
-	#	    -> [init]
-	#	    -> [cond]
-	#	    -> [body]
-	#	    -> [step]
-	#	    -> [end]
 	#	-> [epilogue]
 find_student_by_id__prologue:
 	begin
-
-	push $ra
-	push $t0
-	push $t1
-	push $t2
-	push $t3
-
-	la $t2, students		# Initialize with the base address of the students array
-
 find_student_by_id__body:
 find_student_by_id__loop__init:
-	li	$t0, 0						# int i = 0;
+	li	$t0, 0
 find_student_by_id__loop__cond:
-	bge	$t0, CLASS_SIZE, find_student_by_id__loop__end	# while (i < CLASS_SIZE) {
+	bge	$t0, CLASS_SIZE, find_student_by_id__loop__end
 find_student_by_id__loop__body:
-	# TODO: implement the body of this loop
+	mul	$t1, $t0, SIZEOF_STRUCT_STUDENT
+	addi	$t1, students
+	lw	$t2, STRUCT_STUDENT_ID_OFFSET($t1)
 
-	mul $t1, $t0, 4
-	add $t3, $t1, $t2    # Calculate the address: $t3 = $t1 + $t2
-	lw $t5, students($t3) 			# $t1 = students[i].id
-
-	beq $t5, $a0, find_student_by_id__body # if (students[i].id == id) goto find_student_by_id__loop__body
+	bne	$t2, $a0, find_student_by_id__loop__step
+	move	$v0, $t1
+	j	find_student_by_id__epilogue
 
 find_student_by_id__loop__step:
-	addi	$t0, 1						#  i++;
-	j	find_student_by_id__loop__cond			
+	addi	$t0, 1
+	j	find_student_by_id__loop__cond
 
 find_student_by_id__loop__end:
-	li	$v0, 0						# $v0 = NULL -> for no students
-
+	li	$v0, NULL
 find_student_by_id__epilogue:
-	
-	pop $t3
-    pop $t2
-    pop $t1
-	pop $t0
-	pop $ra
 	end
-	
 	jr	$ra
 
 ################################################################################
@@ -139,9 +111,9 @@ update_student_mark:
 	# Args:		void
 	# Returns:	void
 	#
-	# Stack:	[...]
-	# Uses:		[...]
-	# Clobbers:	[...]
+	# Stack:	[]
+	# Uses:		[]
+	# Clobbers:	[]
 	#
 	# Locals:
 	#
@@ -151,44 +123,38 @@ update_student_mark:
 	#	-> [epilogue]
 update_student_mark__prologue:
 	begin
-	push $ra
-	push $t0
-
+	push	$ra
 update_student_mark__body:
-	# TODO: complete this function
-	# You may need to modify the prologue and epilogue of this function.
-
-	li	$v0, 4		# syscall 4: print_string
+	li	$v0, 4
 	la	$a0, update_student_mark__id_prompt
-	syscall			# printf("Please enter the student ID: ");
+	syscall
 
-	li $v0, 5		# syscall 5: read int
-	move $t0, $v0
-	syscall 		# scanf("%d", &id)
+	li	$v0, 5
+	syscall
+	move	$a0, $v0
+	jal	find_student_by_id
 
-	move $a0, $t0	# $a0 = id
-	jal find_student_by_id	# struct student *student = find_student_by_id(id);
-
-	beq	$v0, $zero, update_student_mark__invalid_id	# if (student == NULL)
-
-	li	$v0, 4		# syscall 4: print_string
+	bne	$v0, NULL, update_student_mark__found_student
+	
+	li	$v0, 4
 	la	$a0, update_student_mark__invalid_id
-	syscall			# printf("Student not found in class!\n");
+	syscall
+	j	update_student_mark__epilogue
 
-	li	$v0, 4		# syscall 4: print_string
+update_student_mark__found_student:
+	move	$t0, $v0
+
+	li	$v0, 4
 	la	$a0, update_student_mark__mark_prompt
-	syscall			# printf("Please enter the student mark: ");
+	syscall
 
-	li	$v0, 5		# syscall 5: read_int
-	syscall							
-	sw	$v0, 0($v0)	# scanf("%d", &student->mark); pointer 
+	li	$v0, 5
+	syscall
+	sw	$v0, STRUCT_STUDENT_MARK_OFFSET($t0)
 
 update_student_mark__epilogue:
-
-	pop $t0
-	pop $ra
+	pop	$ra
 	end
-
 	jr	$ra
 
 ################################################################################
@@ -199,75 +165,62 @@ print_report:
 	# Returns:	void
 	#
 	# Stack:	[]
-	# Uses:		[..., $t0, $v0]
-	# Clobbers:	[..., $t0, $v0]
+	# Uses:		[]
+	# Clobbers:	[]
 	#
 	# Locals:
-	#	- $t0: int i
-	#	- ...
 	#
 	# Structure:
 	#	-> [prologue]
 	#	-> [body]
-	#	  -> loop
-	#	    -> [init]
-	#	    -> [cond]
-	#	    -> [body]
-	#	    -> [step]
-	#	    -> [end]
 	#	-> [epilogue]
 print_report__prologue:
 	begin
-	push $ra
-	push $t0
-	push $t1
-	push $t2
-	push $t3
-
 print_report__body:
-	li $v0, 4						# syscall 4: print string
-	la $a0, print_report__header
-	syscall							# printf("ID\tMark\n");
+	li	$v0, 4
+	la	$a0, print_report__header
+	syscall
 
 print_report__loop__init:
-	li $t0, 0						# int i = 0;
+	li	$t0, 0
 print_report__loop__cond:
-	bge $t0, CLASS_SIZE, print_report__loop__end	# while (i < CLASS_SIZE) {
+	bge	$t0, CLASS_SIZE, print_report__loop__end
 print_report__loop__body:
-	# TODO: implement the body of this loop
+	mul	$t1, $t0, SIZEOF_STRUCT_STUDENT
+	addi	$t1, students
+	lw	$a0, STRUCT_STUDENT_ID_OFFSET($t1)
+	li	$v0, 1
+	syscall
 
-	
-	lw $t1, 4($t3)      # Load students[i].mark into $t1
+	li	$v0, 11
+	li	$a0, '\t'
+	syscall
 
-	beq $t1, UNKNOWN_MARK, print_report__else  # if (students[i].mark == UNKNOWN_MARK)
+	lw	$t2, STRUCT_STUDENT_MARK_OFFSET($t1)
+	bne	$t2, UNKNOWN_MARK, print_report__loop__mark_known
 
-	li $v0, 1           # syscall 1: print int
-	move $a0, $t1       # $a0 = students[i].mark
-	syscall             # printf("%d\n", students[i].mark);
+	li	$v0, 4
+	la	$a0, print_report__unknown_mark
+	syscall
+	j	print_report__loop__step
 
-	j print_report__loop__step
+print_report__loop__mark_known:
+	li	$v0, 1
+	move	$a0, $t2
+	syscall
 
-print_report__else:
-	li $v0, 4           # syscall 4: print string
-	la $a0, print_report__unknown_mark
-	syscall             # printf("?\n");
+	li	$v0, 11
+	li	$a0, '\n'
+	syscall
 
 print_report__loop__step:
-	addi $t0, $t0, 1    # i++;
-	j print_report__loop__cond
+	addi	$t0, 1
+	j	print_report__loop__cond
 
 print_report__loop__end:
-
 print_report__epilogue:
 	end
-	pop $t3
-    pop $t2
-    pop $t1
-    pop $t0
-	pop $ra
-
-	jr $ra
-
+	jr	$ra
 
 ################################################################################
 ################################################################################
@@ -294,7 +247,6 @@ main__exit_message:
 	.asciiz	"=== Exiting cms. Goodbye! ===\n"
 ################################################################################
 # .TEXT main
-# YOU SHOULD NOT MODIFY THIS FUNCTION.
 	.text
 main:
 	# Args:		void
@@ -315,7 +267,7 @@ main:
 	#	      -> update_mark
 	#	      -> print_report
 	#	      -> exit
-	#	   -> [end]
+	#	    -> [end]
 	#	-> [epilogue]
 
 main__prologue:
