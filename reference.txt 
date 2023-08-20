@@ -14,20 +14,28 @@ syscall 11: scan char
         -> li   $v0, '*'
         -> syscall
 
+
+
 Usage of array:
 - declare array: ARRAY_LEN = 10(at the .text)
 - assign value (at the .data): 
 numbers:
     .word   0:ARRAY_LEN         # int numbers[ARRAY_LEN] = {0};
 
-lw:Loads a word from memory(address) into a register. i.e comparing elements of the array.
+lw: loads a word from memory(address) into a register. i.e comparing elements of the array.
 
     mul     $t1, $t0, 4         # element address = i * 4
     li      $t2, numbers        # start address array numbers[ARRAY_LEN]
     add     $t2, $t1, $t2       # &numbers[i]
     lw      $t4, ($t2)          # int x = numbers[i];
 
+    OR
+
+    mul	$t1, $t0, 4			    #   &numbers[i] = numbers + 4 * i -> given numbers: .space 4 * ARRAY_LEN			# int numbers[ARRAY_LEN];
+	sw	$v0, numbers($t1)		#   numbers[i] = x
+
     OR      
+
     lb      $t2, prime($t0)     # to get prime[i($t0)] only if the prime array is sizeof(char), so no need to use formula to * 4. 
 
 sw: Stores a word from a register into the array of memory.i.e reading integers from array
@@ -36,6 +44,13 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
     li      $t2, numbers        # start address array numbers[ARRAY_LEN]
     add     $t2, $t1, $t2       # &numbers[i]
     sw      $v0, ($t2)          # scanf("%d", &numbers[i]);
+
+    OR
+
+    li      $v0, 1
+    mul	    $t1, $t0, 4			#   
+	lw	    $a0, numbers($t1)   # &numbers[i] = numbers + 4 * i
+    syscall					    # printf("%d", numbers[i])
 
     OR
 
@@ -54,6 +69,8 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
     add     $t2, $t2, $t1       # offset + y(col)
     mul     $t2, $t2, 4         # (offset + y) * sizeof(int)
     lw      $a0, array($t2)     # &array[x][y] = array + (x * N_COLS + y) * sizeof(int)
+
+
 
 Useage of Function:
     prologue:
