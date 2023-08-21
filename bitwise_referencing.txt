@@ -5,3 +5,5 @@ Significance of masking:
         Ignore all other bits except the last 4 bits.
     - The value of 0xff (or 1111 1111 in binary):
         Extracts(Isolate) the last 8 bits 
+
+### 8 bits = 1 byte
