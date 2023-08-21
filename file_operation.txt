@@ -7,7 +7,7 @@ fopen 打开  -> (path, mode):
 
 (记得判断文件是否打开失败)
 fclose 关闭
-fseek 定位
+fseek 定位: SEEK_SET: head; SEEK_END: tail
 
 function:
 fgetc(fp) -> 从fp指针读入一个字符，如果成功，return所读字符， 如果失败，return EOF
