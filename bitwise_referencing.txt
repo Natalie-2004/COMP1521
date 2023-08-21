@@ -1,9 +1,22 @@
 Significance of masking:
 
-    - The value 0xF (or 1111 in binary):
+    - The value 0x0F (or 1111 in binary):
         Isolate the last 4 bits of a number.
         Ignore all other bits except the last 4 bits.
     - The value of 0xff (or 1111 1111 in binary):
         Extracts(Isolate) the last 8 bits 
 
 ### 8 bits = 1 byte
+
+Structure of a float point:
+1 bit(sign) + 8 bit(exponent) + 23 bit(fraction)
+
+Special float:
+    - +- 0: exp == -; fraction == 0; 
+    - +inf: sign == 0; exp == 255; fraction == 0
+    - -inf: sign == 1; exp == 255; fraction == 0
+    - NaN: exp == 255; fraction != 0
+
+Bitwise:
+    - AND &: extract certain bit -> when question asking specific position (i,e the 3rd bit is 0x04); isolate parts of number
+    - OR |: set certain set -> when question asking to enbale or set a specific bit or bits to 1
