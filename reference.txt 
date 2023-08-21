@@ -56,8 +56,15 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
 
     sw	    $t5, ($t2)			# numbers[i] = y;
 
-### [i - 1] in int array: -> &numbers[i] - 4
-    addi    (new register), (i register), (-4)
+### [n - 1] in int array: 
+    addi $t0, $s0, -1           # n($s0) - 1
+    mul  $t0, $t0, 4            # (n - 1) * 4
+    add  $t0, $s1, $t0          # (n - 1) * 4 + array($s1)
+
+### 1d array:
+    mul  $t0, $s4, 4            # offset = i * 4 -> sizeof(int)
+    add  $t0, $s1, $t0          # &array[i] = (i * 4) + array($s1) ->如果要求&array[i]则跳过下一步
+    lw   $t0, ($t0)             # $t0 = array[i]
 
 ### 2d array:
 - calculate a row of array: number of element * size
@@ -69,8 +76,6 @@ sw: Stores a word from a register into the array of memory.i.e reading integers 
     add     $t2, $t2, $t1       # offset + y(col)
     mul     $t2, $t2, 4         # (offset + y) * sizeof(int)
     lw      $a0, array($t2)     # &array[x][y] = array + (x * N_COLS + y) * sizeof(int)
-
-
 
 Useage of Function:
     prologue:
