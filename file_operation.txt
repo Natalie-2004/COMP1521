@@ -1,0 +1,30 @@
+文件是一堆数据的结合， 每个被使用的文件的信息都存储在一个结构体FILE里面， 文件指针 FILE *fp
+
+common:
+fopen 打开  -> (path, mode):
+            mode:   
+            r, rb 只读方式打开； w, wb 只写方式打开（会覆盖文本内容); r+, r+b, rb+ 读写方式打开；w+, w+b, wb+ 读写方式打开，如果不存在。创建新文件; a,ab 追加（不会覆盖）
+
+(记得判断文件是否打开失败)
+fclose 关闭
+fseek 定位
+
+function:
+fgetc(fp) -> 从fp指针读入一个字符，如果成功，return所读字符， 如果失败，return EOF
+fputc(ch, fp) -> 从fp指针写入一个字符ch，如果成功， return输出字符，如果失败return EOF
+
+fgets(str, n, fp) -> 从fp指向的指针读取长度为（n-1）的字符串， 存放到字符串数组str中。如果成功，return地址str， 如果失败，return NULL
+fputs(str, fp) -> 把str所指向的字符串写进文件指针fp指向的文件中。如果成功，return 0，如果失败，return 非0值
+
+用格式化读取文件：
+fprintf(fp，格式字符串，输出表列)；
+fscanf(fp，格式字符串，输入表列)；
+
+（批量读入读入）
+用二进制方式向文件读写一组数据（这时候必须用binary mode）：
+fread(buffer, size, count, fp):
+fwrite(buffer, size, count, fp);
+
+    - buffer: 一个地址，对于fread， 存放从文件读入的数据的存储区的地址； 对于fwrite， 把地址开始的储存区中的数据向文件输出
+    - size: 要读写多少的字节数
+    - count： 要读写多少个数据项
